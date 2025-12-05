@@ -1,0 +1,7 @@
+class ThreadRepository {
+	async addThread(newThread, ownerId) {
+		throw new Error('THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+	}
+}
+
+module.exports = ThreadRepository;
