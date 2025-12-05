@@ -41,6 +41,10 @@ const createServer = async (container) => {
 			plugin: require('../../Interfaces/http/api/threads'),
 			options: { container },
 		},
+		{
+			plugin: require('../../Interfaces/http/api/comments'),
+			options: { container },
+		},
 	]);
 
 	server.ext('onPreResponse', (request, h) => {
@@ -61,9 +65,12 @@ const createServer = async (container) => {
 				return newResponse;
 			}
 
-			/* istanbul ignore next 3 */
+			/* istanbul ignore next 6 */
 			if (process.env.NODE_ENV !== 'production') {
-				console.log('💥 error:', response);
+				console.error('⚠️ error:', response);
+				console.error('⚠️ cause:', response.cause);
+				console.error('⚠️ stack:', response.stack);
+				console.error('⚠️ message:', response.message);
 			}
 
 			// mempertahankan penanganan client error oleh hapi secara native, seperti 404, etc.

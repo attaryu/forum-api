@@ -7,6 +7,11 @@ describe('ThreadRepository interface', () => {
 		const throwMessage = 'THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED';
 
 		// Action & Assert
-		await expect(threadRepository.addThread({}, '')).rejects.toThrow(throwMessage);
+		await expect(threadRepository.addThread({}, '')).rejects.toThrow(
+			throwMessage
+		);
+		await expect(threadRepository.verifyThreadExist('')).rejects.toThrow(
+			throwMessage
+		);
 	});
 });

@@ -16,9 +16,11 @@ const AuthenticationTokenManager = require('../Applications/security/Authenticat
 const ThreadRepository = require('../Domains/threads/ThreadRepository');
 const UserRepository = require('../Domains/users/UserRepository');
 const AuthenticationRepository = require('../Domains/authentications/AuthenticationRepository');
+const CommentRepository = require('../Domains/comments/CommentRepository');
 const UserRepositoryPostgres = require('./repository/UserRepositoryPostgres');
 const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
 const ThreadRepositoryPostgres = require('./repository/ThreadRepositoryPostgres');
+const CommentRepositoryPostgres = require('./repository/CommentRepositoryPostgres');
 
 // use case
 const AddUserUseCase = require('../Applications/use_case/users/AddUserUseCase');
@@ -26,6 +28,7 @@ const LoginUserUseCase = require('../Applications/use_case/authentications/Login
 const LogoutUserUseCase = require('../Applications/use_case/authentications/LogoutUserUseCase');
 const RefreshAuthenticationUseCase = require('../Applications/use_case/authentications/RefreshAuthenticationUseCase');
 const AddThreadUseCase = require('../Applications/use_case/threads/AddThreadUseCase');
+const AddCommentUseCase = require('../Applications/use_case/comments/AddCommentUseCase');
 
 // creating container
 const container = createContainer();
@@ -89,6 +92,20 @@ container.register([
 			dependencies: [
 				{
 					concrete: Jwt.token,
+				},
+			],
+		},
+	},
+	{
+		key: CommentRepository.name,
+		Class: CommentRepositoryPostgres,
+		parameter: {
+			dependencies: [
+				{
+					concrete: pool,
+				},
+				{
+					concrete: nanoid,
 				},
 			],
 		},
@@ -175,6 +192,23 @@ container.register([
 		parameter: {
 			injectType: 'destructuring',
 			dependencies: [
+				{
+					name: 'threadRepository',
+					internal: ThreadRepository.name,
+				},
+			],
+		},
+	},
+	{
+		key: AddCommentUseCase.name,
+		Class: AddCommentUseCase,
+		parameter: {
+			injectType: 'destructuring',
+			dependencies: [
+				{
+					name: 'commentRepository',
+					internal: CommentRepository.name,
+				},
 				{
 					name: 'threadRepository',
 					internal: ThreadRepository.name,

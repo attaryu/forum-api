@@ -4,6 +4,7 @@ const container = require('../../container');
 const createServer = require('../createServer');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
+const helper = require('./helper');
 
 describe('/threads endpoint', () => {
 	const threadPayload = {
@@ -18,30 +19,16 @@ describe('/threads endpoint', () => {
 	beforeAll(async () => {
 		server = await createServer(container);
 
-		const payload = {
+		const creator = await helper.createUserAndLogin(server, {
 			username: 'username',
 			password: 'secret',
 			fullname: 'fullname',
-		};
-
-		const createUserResponse = await server.inject({
-			method: 'POST',
-			url: '/users',
-			payload,
 		});
 
-		const createUserResponseJson = JSON.parse(createUserResponse.payload);
-		user = createUserResponseJson.data.addedUser;
+		user = creator.user;
 
-		const loginResponse = await server.inject({
-			method: 'POST',
-			url: '/authentications',
-			payload,
-		});
-
-		const responseJson = JSON.parse(loginResponse.payload);
 		headers = {
-			Authorization: `Bearer ${responseJson.data.accessToken}`,
+			Authorization: `Bearer ${creator.accessToken}`,
 		};
 	});
 
