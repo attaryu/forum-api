@@ -50,9 +50,9 @@ describe('/threads endpoint', () => {
 	});
 
 	afterAll(async () => {
-		await pool.end();
 		await UsersTableTestHelper.cleanTable();
 		await AuthenticationsTableTestHelper.cleanTable();
+		await pool.end();
 	});
 
 	describe('when POST /threads', () => {

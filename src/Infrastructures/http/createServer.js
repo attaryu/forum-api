@@ -61,6 +61,7 @@ const createServer = async (container) => {
 				return newResponse;
 			}
 
+			/* istanbul ignore next 3 */
 			if (process.env.NODE_ENV !== 'production') {
 				console.log('💥 error:', response);
 			}
