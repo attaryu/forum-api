@@ -1,3 +1,4 @@
+const AuthorizationError = require('./AuthorizationError');
 const InvariantError = require('./InvariantError');
 const NotFoundError = require('./NotFoundError');
 
@@ -46,10 +47,15 @@ DomainErrorTranslator._directories = {
 	'ADD_COMMENT_USE_CASE.NOT_CONTAIN_COMMENT_CONTENT': new InvariantError(
 		'tidak dapat membuat komentar baru karena properti yang dibutuhkan tidak ada'
 	),
-	'ADD_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError(
-		'tidak dapat membuat komentar baru karena tipe data tidak sesuai'
-	),
+	'ADD_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION':
+		new InvariantError(
+			'tidak dapat membuat komentar baru karena tipe data tidak sesuai'
+		),
 	'THREAD.NOT_FOUND': new NotFoundError('thread tidak ditemukan'),
+	'COMMENT.NOT_FOUND': new NotFoundError('komentar tidak ditemukan'),
+	'COMMENT.AUTHORIZATION_ERROR': new AuthorizationError(
+		'anda tidak berhak mengakses komentar ini'
+	),
 };
 
 module.exports = DomainErrorTranslator;
