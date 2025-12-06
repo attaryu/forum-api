@@ -20,10 +20,10 @@ const UserRepository = require('../Domains/users/UserRepository');
 const AuthenticationRepository = require('../Domains/authentications/AuthenticationRepository');
 const CommentRepository = require('../Domains/comments/CommentRepository');
 
-const UserRepositoryPostgres = require('./repository/UserRepositoryPostgres');
-const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
-const ThreadRepositoryPostgres = require('./repository/ThreadRepositoryPostgres');
-const CommentRepositoryPostgres = require('./repository/CommentRepositoryPostgres');
+const UserRepositoryPostgres = require('./repository/write/UserRepositoryPostgres');
+const AuthenticationRepositoryPostgres = require('./repository/write/AuthenticationRepositoryPostgres');
+const ThreadRepositoryPostgres = require('./repository/write/ThreadRepositoryPostgres');
+const CommentRepositoryPostgres = require('./repository/write/CommentRepositoryPostgres');
 const ThreadQueryRepositoryPostgres = require('./repository/read/ThreadQueryRepositoryPostgres');
 
 // use case

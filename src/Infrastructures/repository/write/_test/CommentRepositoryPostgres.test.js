@@ -1,11 +1,11 @@
-const pool = require('../../database/postgres/pool');
-const AddedComment = require('../../../Domains/comments/entities/AddedComment');
-const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
-const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
-const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const pool = require('../../../database/postgres/pool');
+const AddedComment = require('../../../../Domains/comments/entities/AddedComment');
+const CommentsTableTestHelper = require('../../../../../tests/CommentsTableTestHelper');
+const ThreadsTableTestHelper = require('../../../../../tests/ThreadsTableTestHelper');
+const UsersTableTestHelper = require('../../../../../tests/UsersTableTestHelper');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
-const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
-const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
+const NotFoundError = require('../../../../Commons/exceptions/NotFoundError');
+const AuthorizationError = require('../../../../Commons/exceptions/AuthorizationError');
 
 describe('CommentRepository postgres', () => {
 	// arrange
