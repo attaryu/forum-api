@@ -37,7 +37,7 @@ class ThreadQueryRepositoryPostgres extends ThreadQueryRepository {
 			throw new NotFoundError('THREAD.NOT_FOUND');
 		}
 
-		const thread = result.rows[0];
+		const [thread] = result.rows;
 
 		const threadData = {
 			id: thread.thread_id,

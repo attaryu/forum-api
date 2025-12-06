@@ -41,22 +41,22 @@ describe('ThreadRepository postgres', () => {
 
 	describe('addThread function', () => {
 		it('should persist added thread and return added thread correctly', async () => {
-			// Action
+			// act
 			await threadRepositoryPostgres.addThread(threadPayload, userId);
 
-			// Assert
+			// assert
 			const thread = await ThreadsTableTestHelper.findThreadById('thread-123');
 			expect(thread).toHaveLength(1);
 		});
 
 		it('should return added thread correctly', async () => {
-			// Action
+			// act
 			const addedThread = await threadRepositoryPostgres.addThread(
 				threadPayload,
 				userId
 			);
 
-			// Assert
+			// assert
 			expect(addedThread).toStrictEqual(
 				new AddedThread({
 					id: 'thread-123',
@@ -69,14 +69,14 @@ describe('ThreadRepository postgres', () => {
 
 	describe('verifyThreadExist function', () => {
 		it('should throw NotFoundError when thread not found', async () => {
-			// Action & Assert
+			// act & assert
 			await expect(
 				threadRepositoryPostgres.verifyThreadExist('thread-123')
 			).rejects.toThrowError(NotFoundError);
 		});
 
 		it('should not throw NotFoundError when thread is found', async () => {
-			// Arrange
+			// arrange
 			const id = 'thread-123';
 
 			await ThreadsTableTestHelper.addThread({
@@ -85,7 +85,7 @@ describe('ThreadRepository postgres', () => {
 				owner: userId,
 			});
 
-			// Action & Assert
+			// act & assert
 			await expect(
 				threadRepositoryPostgres.verifyThreadExist(id)
 			).resolves.not.toThrowError(NotFoundError);

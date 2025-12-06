@@ -6,8 +6,8 @@ const LoginUserUseCase = require('../LoginUserUseCase');
 const NewAuth = require('../../../../Domains/authentications/entities/NewAuth');
 
 describe('GetAuthenticationUseCase', () => {
-  it('should orchestrating the get authentication action correctly', async () => {
-    // Arrange
+  it('should orchestrating the get authentication act correctly', async () => {
+    // arrange
     const useCasePayload = {
       username: 'dicoding',
       password: 'secret',
@@ -43,10 +43,10 @@ describe('GetAuthenticationUseCase', () => {
       passwordHash: mockPasswordHash,
     });
 
-    // Action
+    // act
     const actualAuthentication = await loginUserUseCase.execute(useCasePayload);
 
-    // Assert
+    // assert
     expect(actualAuthentication).toEqual(new NewAuth({
       accessToken: 'access_token',
       refreshToken: 'refresh_token',

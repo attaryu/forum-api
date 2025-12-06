@@ -8,7 +8,7 @@ describe('AddCommentUseCase', () => {
 	const threadId = 'thread-123';
 
 	it('should throw error if use case payload not contain content', async () => {
-		// Arrange
+		// arrange
 		const payload = {
 			foo: 'bar',
 		};
@@ -21,21 +21,23 @@ describe('AddCommentUseCase', () => {
 	});
 
 	it('should throw error if content not string', async () => {
-		// Arrange
+		// arrange
 		const payload = {
 			content: 12345,
 		};
 
 		const addCommentUseCase = new AddCommentUseCase({});
 
-		// Action & Assert
+		// act & assert
 		await expect(
 			addCommentUseCase.execute(payload, threadId, userId)
-		).rejects.toThrowError('ADD_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
+		).rejects.toThrowError(
+			'ADD_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION'
+		);
 	});
 
-	it('should orchestrating the add comment action correctly', async () => {
-		// Arrange
+	it('should orchestrating the add comment act correctly', async () => {
+		// arrange
 		const payload = { content: 'content' };
 
 		const mockAddedComment = new AddedComment({
@@ -59,18 +61,16 @@ describe('AddCommentUseCase', () => {
 			commentRepository: mockedCommentRepository,
 		});
 
-		// Act
+		// act
 		const addedComment = await addCommentUseCase.execute(
 			payload,
 			threadId,
 			userId
 		);
 
-		// Assert
-		expect(mockedThreadRepository.verifyThreadExist).toHaveBeenCalledWith(
-			threadId
-		);
-		expect(mockedCommentRepository.addComment).toHaveBeenCalledWith(
+		// assert
+		expect(mockedThreadRepository.verifyThreadExist).toBeCalledWith(threadId);
+		expect(mockedCommentRepository.addComment).toBeCalledWith(
 			payload.content,
 			threadId,
 			userId

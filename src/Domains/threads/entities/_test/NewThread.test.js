@@ -2,52 +2,54 @@ const NewThread = require('../NewThread');
 
 describe('NewThread entities', () => {
 	it('should throw error when payload not contain needed property', () => {
-		// Arrange
+		// arrange
 		const payload = {
 			title: 'title',
 		};
 
-		// Action & Assert
-		expect(() => new NewThread(payload)).toThrow(
+		// act & assert
+		expect(() => new NewThread(payload)).toThrowError(
 			'NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY'
 		);
 	});
 
 	it('should throw error when payload not meet data type specification', () => {
-		// Arrange
+		// arrange
 		const payload = {
 			title: 'title',
 			body: 1234,
 		};
 
-		// Action & Assert
-		expect(() => new NewThread(payload)).toThrow(
+		// act & assert
+		expect(() => new NewThread(payload)).toThrowError(
 			'NEW_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION'
 		);
 	});
 
 	it('should throw error when title is more than 50 characters', () => {
-		// Arrange
+		// arrange
 		const payload = {
 			title: 'a'.repeat(51),
 			body: 'body',
 		};
 
-		// Action & Assert
-		expect(() => new NewThread(payload)).toThrow('NEW_THREAD.TITLE_LIMIT_CHAR');
+		// act & assert
+		expect(() => new NewThread(payload)).toThrowError(
+			'NEW_THREAD.TITLE_LIMIT_CHAR'
+		);
 	});
 
 	it('should create NewThread entities correctly', () => {
-		// Arrange
+		// arrange
 		const payload = {
 			title: 'title',
 			body: 'body',
 		};
 
-		// Action
+		// act
 		const newThread = new NewThread(payload);
 
-		// Assert
+		// assert
 		expect(newThread).toBeInstanceOf(NewThread);
 		expect(newThread.title).toEqual(payload.title);
 		expect(newThread.body).toEqual(payload.body);

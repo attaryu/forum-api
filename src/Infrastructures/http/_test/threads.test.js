@@ -47,7 +47,7 @@ describe('/threads endpoint', () => {
 
 	describe('when POST /threads', () => {
 		it('should response 201, persisted thread, and correct ownership', async () => {
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'POST',
 				url: '/threads',
@@ -55,7 +55,7 @@ describe('/threads endpoint', () => {
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(201);
 			expect(responseJson.status).toEqual('success');
@@ -64,26 +64,26 @@ describe('/threads endpoint', () => {
 		});
 
 		it('should response 401 when missing authentication', async () => {
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'POST',
 				url: '/threads',
 				payload: threadPayload,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(401);
 			expect(responseJson.message).toEqual('Missing authentication');
 		});
 
 		it('should response 400 when request payload not contain needed property', async () => {
-			// Arrange
+			// arrange
 			const invalidThreadPayload = {
 				title: 'title',
 			};
 
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'POST',
 				url: '/threads',
@@ -91,7 +91,7 @@ describe('/threads endpoint', () => {
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(400);
 			expect(responseJson.status).toEqual('fail');
@@ -101,13 +101,13 @@ describe('/threads endpoint', () => {
 		});
 
 		it('should response 400 when request payload not meet data type specification', async () => {
-			// Arrange
+			// arrange
 			const invalidThreadPayload = {
 				title: 'title',
 				body: 123,
 			};
 
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'POST',
 				url: '/threads',
@@ -115,7 +115,7 @@ describe('/threads endpoint', () => {
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(400);
 			expect(responseJson.status).toEqual('fail');
@@ -125,13 +125,13 @@ describe('/threads endpoint', () => {
 		});
 
 		it('should response 400 when request payload title is more than 50 characters', async () => {
-			// Arrange
+			// arrange
 			const invalidThreadPayload = {
 				title: 'a'.repeat(51),
 				body: 'body',
 			};
 
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'POST',
 				url: '/threads',
@@ -139,7 +139,7 @@ describe('/threads endpoint', () => {
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(400);
 			expect(responseJson.status).toEqual('fail');
@@ -151,7 +151,7 @@ describe('/threads endpoint', () => {
 
 	describe('when GET /threads/{threadId}', () => {
 		it('should response 200 and return the thread', async () => {
-			// Arrange
+			// arrange
 			const threadResponse = await server.inject({
 				method: 'POST',
 				url: '/threads',
@@ -177,13 +177,13 @@ describe('/threads endpoint', () => {
 				headers,
 			});
 
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'GET',
 				url: `/threads/${createdThread.id}`,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 
 			expect(response.statusCode).toEqual(200);
@@ -210,13 +210,13 @@ describe('/threads endpoint', () => {
 		});
 
 		it('should response 404 when thread not found', async () => {
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'GET',
 				url: '/threads/thread-999',
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 
 			expect(response.statusCode).toEqual(404);

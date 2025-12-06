@@ -3,8 +3,8 @@ const CommentRepository = require('../../../../Domains/comments/CommentRepositor
 const ThreadRepository = require('../../../../Domains/threads/ThreadRepository');
 
 describe('DeleteCommentUseCase', () => {
-	it('should orchestrating the delete comment action correctly', async () => {
-		// Arrange
+	it('should orchestrating the delete comment act correctly', async () => {
+		// arrange
 		const commentId = 'comment-123';
 		const userId = 'user-123';
 		const threadId = 'thread-123';
@@ -29,10 +29,10 @@ describe('DeleteCommentUseCase', () => {
 			threadRepository: mockThreadRepository,
 		});
 
-		// Action
+		// act
 		await deleteCommentUseCase.execute(threadId, commentId, userId);
 
-		// Assert
+		// assert
 		expect(mockThreadRepository.verifyThreadExist).toBeCalledWith(threadId);
 		expect(mockCommentRepository.verifyComment).toBeCalledWith(
 			commentId,

@@ -56,14 +56,14 @@ describe('CommentRepository postgres', () => {
 
 	describe('addComment function', () => {
 		it('should persist added comment and return added comment correctly', async () => {
-			// Action
+			// act
 			await commentRepositoryPostgres.addComment(
 				content,
 				threadId,
 				userCommenterId
 			);
 
-			// Assert
+			// assert
 			const comments = await CommentsTableTestHelper.findCommentsById(
 				commentId
 			);
@@ -89,7 +89,7 @@ describe('CommentRepository postgres', () => {
 
 	describe('deleteComment function', () => {
 		it('should soft delete comment correctly', async () => {
-			// Arrange
+			// arrange
 			await CommentsTableTestHelper.addComment({
 				id: commentId,
 				content,
@@ -97,10 +97,10 @@ describe('CommentRepository postgres', () => {
 				owner: userCommenterId,
 			});
 
-			// Action
+			// act
 			await commentRepositoryPostgres.deleteComment(commentId);
 
-			// Assert
+			// assert
 			const [afterDeleteComment] =
 				await CommentsTableTestHelper.findCommentsById(commentId);
 
@@ -110,14 +110,14 @@ describe('CommentRepository postgres', () => {
 
 	describe('verifyComment function', () => {
 		it('should throw NotFoundError when comment not found', async () => {
-			// Action & Assert
+			// act & assert
 			await expect(
 				commentRepositoryPostgres.verifyComment('comment-xyz', userCommenterId)
 			).rejects.toThrowError(NotFoundError);
 		});
 
 		it('should throw AuthorizationError when the owner is different', async () => {
-			// Arrange
+			// arrange
 			await CommentsTableTestHelper.addComment({
 				id: commentId,
 				content,
@@ -125,14 +125,14 @@ describe('CommentRepository postgres', () => {
 				owner: userCommenterId,
 			});
 
-			// Action & Assert
+			// act & assert
 			await expect(
 				commentRepositoryPostgres.verifyComment(commentId, 'user-xyz')
 			).rejects.toThrowError(AuthorizationError);
 		});
 
 		it('should not throw NotFoundError and AuthorizationError when the owner is the same and the comment is exist', async () => {
-			// Arrange
+			// arrange
 			await CommentsTableTestHelper.addComment({
 				id: commentId,
 				content,
@@ -140,7 +140,7 @@ describe('CommentRepository postgres', () => {
 				owner: userCommenterId,
 			});
 
-			// Action & Assert
+			// act & assert
 			await expect(
 				commentRepositoryPostgres.verifyComment(commentId, userCommenterId)
 			).resolves.not.toThrowError(AuthorizationError);

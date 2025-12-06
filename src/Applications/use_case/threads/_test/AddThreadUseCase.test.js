@@ -4,8 +4,8 @@ const AddedThread = require('../../../../Domains/threads/entities/AddedThread');
 const AddThreadUseCase = require('../AddThreadUseCase');
 
 describe('AddThreadUseCase', () => {
-	it('should orchestrating the add thread action correctly', async () => {
-		// Arrange
+	it('should orchestrating the add thread act correctly', async () => {
+		// arrange
 		const userId = 'user-123';
 		const payload = {
 			title: 'title',
@@ -26,11 +26,11 @@ describe('AddThreadUseCase', () => {
 			threadRepository: mockedThreadRepository,
 		});
 
-		// Act
+		// act
 		const addedThread = await addThreadUseCase.execute(payload, userId);
 
-		// Assert
-		expect(mockedThreadRepository.addThread).toHaveBeenCalledWith(
+		// assert
+		expect(mockedThreadRepository.addThread).toBeCalledWith(
 			new NewThread(payload),
 			userId
 		);

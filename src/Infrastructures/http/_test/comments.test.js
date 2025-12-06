@@ -69,7 +69,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
 	describe('when POST /threads/{threadId}/comments', () => {
 		it('should response 201, persist comment, and correct ownership', async () => {
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'POST',
 				url: `/threads/${thread.id}/comments`,
@@ -77,7 +77,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(201);
 			expect(responseJson.status).toEqual('success');
@@ -86,21 +86,21 @@ describe('/threads/{threadId}/comments endpoint', () => {
 		});
 
 		it('should response 401 when missing authentication', async () => {
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'POST',
 				url: `/threads/${thread.id}/comments`,
 				payload: commentPayload,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(401);
 			expect(responseJson.message).toEqual('Missing authentication');
 		});
 
 		it('should response 404 when threadId not found', async () => {
-			// Act
+			// act
 			const response = await server.inject({
 				method: 'POST',
 				url: '/threads/thread-999/comments',
@@ -108,7 +108,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(404);
 			expect(responseJson.status).toEqual('fail');
@@ -116,7 +116,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
 		});
 
 		it('should response 400 when request payload not contain needed property', async () => {
-			// Act
+			// act
 			const response = await server.inject({
 				method: 'POST',
 				url: `/threads/${thread.id}/comments`,
@@ -124,7 +124,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(400);
 			expect(responseJson.status).toEqual('fail');
@@ -134,7 +134,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
 		});
 
 		it('should response 400 when request payload not meet data type specification', async () => {
-			// Act
+			// act
 			const response = await server.inject({
 				method: 'POST',
 				url: `/threads/${thread.id}/comments`,
@@ -142,7 +142,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(400);
 			expect(responseJson.status).toEqual('fail');
@@ -154,7 +154,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
 	describe('when DELETE /threads/{threadId}/comments/{commentId}', () => {
 		it('should response 200 and delete comment', async () => {
-			// Arrange
+			// arrange
 			const commentResponse = await server.inject({
 				method: 'POST',
 				url: `/threads/${thread.id}/comments`,
@@ -164,21 +164,21 @@ describe('/threads/{threadId}/comments endpoint', () => {
 			const addedComment = JSON.parse(commentResponse.payload).data
 				.addedComment;
 
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'DELETE',
 				url: `/threads/${thread.id}/comments/${addedComment.id}`,
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(200);
 			expect(responseJson.status).toEqual('success');
 		});
 
 		it('should response 401 when missing authentication', async () => {
-			// Arrange
+			// arrange
 			const commentResponse = await server.inject({
 				method: 'POST',
 				url: `/threads/${thread.id}/comments`,
@@ -188,20 +188,20 @@ describe('/threads/{threadId}/comments endpoint', () => {
 			const addedComment = JSON.parse(commentResponse.payload).data
 				.addedComment;
 
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'DELETE',
 				url: `/threads/${thread.id}/comments/${addedComment.id}`,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(401);
 			expect(responseJson.message).toEqual('Missing authentication');
 		});
 
 		it('should response 404 when threadId not found', async () => {
-			// Arrange
+			// arrange
 			const commentResponse = await server.inject({
 				method: 'POST',
 				url: `/threads/${thread.id}/comments`,
@@ -211,14 +211,14 @@ describe('/threads/{threadId}/comments endpoint', () => {
 			const addedComment = JSON.parse(commentResponse.payload).data
 				.addedComment;
 
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'DELETE',
 				url: `/threads/thread-999/comments/${addedComment.id}`,
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(404);
 			expect(responseJson.status).toEqual('fail');
@@ -226,7 +226,7 @@ describe('/threads/{threadId}/comments endpoint', () => {
 		});
 
 		it('should response 403 when user is not the owner of the comment', async () => {
-			// Arrange
+			// arrange
 			const commentResponse = await server.inject({
 				method: 'POST',
 				url: `/threads/${thread.id}/comments`,
@@ -247,28 +247,28 @@ describe('/threads/{threadId}/comments endpoint', () => {
 				Authorization: `Bearer ${anotherUser.accessToken}`,
 			};
 
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'DELETE',
 				url: `/threads/${thread.id}/comments/${addedComment.id}`,
 				headers: anotherUserHeaders,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(403);
 			expect(responseJson.status).toEqual('fail');
 		});
 
 		it('should response 404 when commentId not found', async () => {
-			// Action
+			// act
 			const response = await server.inject({
 				method: 'DELETE',
 				url: `/threads/${thread.id}/comments/comment-999`,
 				headers,
 			});
 
-			// Assert
+			// assert
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(404);
 			expect(responseJson.status).toEqual('fail');

@@ -2,7 +2,7 @@ const ThreadQueryRepository = require('../../../../Domains/threads/ThreadQueryRe
 const GetThreadUseCase = require('../GetThreadUseCase');
 
 describe('GetThreadUseCase', () => {
-	it('should orchestrating get thread action correctly', async () => {
+	it('should orchestrating get thread act correctly', async () => {
 		// arrange
 		const threadId = 'thread-123';
 		const mockedThread = {
@@ -31,7 +31,7 @@ describe('GetThreadUseCase', () => {
 			threadQueryRepository: mockedThreadQueryRepository,
 		});
 
-		// action
+		// act
 		const thread = await getThreadUseCase.execute(threadId);
 
 		// assert
