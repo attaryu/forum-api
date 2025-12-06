@@ -43,10 +43,10 @@ DomainErrorTranslator._directories = {
 	'NEW_THREAD.TITLE_LIMIT_CHAR': new InvariantError(
 		'tidak dapat membuat thread baru karena karakter judul melebihi batas'
 	),
-	'NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError(
+	'ADD_COMMENT_USE_CASE.NOT_CONTAIN_COMMENT_CONTENT': new InvariantError(
 		'tidak dapat membuat komentar baru karena properti yang dibutuhkan tidak ada'
 	),
-	'NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError(
+	'ADD_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError(
 		'tidak dapat membuat komentar baru karena tipe data tidak sesuai'
 	),
 	'THREAD.NOT_FOUND': new NotFoundError('thread tidak ditemukan'),

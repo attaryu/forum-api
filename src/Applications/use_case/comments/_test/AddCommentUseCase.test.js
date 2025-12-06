@@ -17,7 +17,7 @@ describe('AddCommentUseCase', () => {
 
 		await expect(
 			addCommentUseCase.execute(payload, threadId, userId)
-		).rejects.toThrowError('NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+		).rejects.toThrowError('ADD_COMMENT_USE_CASE.NOT_CONTAIN_COMMENT_CONTENT');
 	});
 
 	it('should throw error if content not string', async () => {
@@ -31,7 +31,7 @@ describe('AddCommentUseCase', () => {
 		// Action & Assert
 		await expect(
 			addCommentUseCase.execute(payload, threadId, userId)
-		).rejects.toThrowError('NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+		).rejects.toThrowError('ADD_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
 	});
 
 	it('should orchestrating the add comment action correctly', async () => {

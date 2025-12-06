@@ -15,11 +15,11 @@ class AddCommentUseCase {
 
 	_verifyPayload(content) {
 		if (!content) {
-			throw new Error('NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+			throw new Error('ADD_COMMENT_USE_CASE.NOT_CONTAIN_COMMENT_CONTENT');
 		}
 
 		if (typeof content !== 'string') {
-			throw new Error('NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+			throw new Error('ADD_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
 		}
 	}
 }
