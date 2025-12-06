@@ -96,20 +96,15 @@ describe('CommentRepository postgres', () => {
 				threadId,
 				owner: userCommenterId,
 			});
-			const beforeDeleteComment =
-				await CommentsTableTestHelper.findCommentsById(commentId);
 
 			// Action
 			await commentRepositoryPostgres.deleteComment(commentId);
 
 			// Assert
-			const afterDeleteComment = await CommentsTableTestHelper.findCommentsById(
-				commentId
-			);
-			expect(afterDeleteComment[0].is_delete).toBe(true);
-			expect(afterDeleteComment[0].content).not.toEqual(
-				beforeDeleteComment[0].content
-			);
+			const [afterDeleteComment] =
+				await CommentsTableTestHelper.findCommentsById(commentId);
+
+			expect(afterDeleteComment.is_deleted).toBe(true);
 		});
 	});
 

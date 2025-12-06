@@ -21,7 +21,7 @@ class ThreadQueryRepositoryPostgres extends ThreadQueryRepository {
           thread_comments.id AS comment_id,
           thread_comments.content AS comment_content,
           thread_comments.date AS comment_date,
-          thread_comments.is_delete AS comment_is_deleted,
+          thread_comments.is_deleted AS comment_is_deleted,
           commenter.username AS comment_owner_username
         FROM threads
           LEFT JOIN users AS owner ON threads.owner = owner.id
