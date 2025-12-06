@@ -4,6 +4,7 @@ const container = require('../../container');
 const createServer = require('../createServer');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const helper = require('./helper');
 
 describe('/threads endpoint', () => {
@@ -33,12 +34,14 @@ describe('/threads endpoint', () => {
 	});
 
 	afterEach(async () => {
+		await CommentsTableTestHelper.cleanTable();
 		await ThreadsTableTestHelper.cleanTable();
 	});
 
 	afterAll(async () => {
 		await UsersTableTestHelper.cleanTable();
 		await AuthenticationsTableTestHelper.cleanTable();
+
 		await pool.end();
 	});
 
@@ -143,6 +146,82 @@ describe('/threads endpoint', () => {
 			expect(responseJson.message).toEqual(
 				'tidak dapat membuat thread baru karena karakter judul melebihi batas'
 			);
+		});
+	});
+
+	describe('when GET /threads/{threadId}', () => {
+		it('should response 200 and return the thread', async () => {
+			// Arrange
+			const threadResponse = await server.inject({
+				method: 'POST',
+				url: '/threads',
+				payload: threadPayload,
+				headers,
+			});
+
+			const createdThread = JSON.parse(threadResponse.payload).data.addedThread;
+
+			const commentResponse = await server.inject({
+				method: 'POST',
+				url: `/threads/${createdThread.id}/comments`,
+				payload: { content: 'content' },
+				headers,
+			});
+
+			const createdComment = JSON.parse(commentResponse.payload).data
+				.addedComment;
+
+			await server.inject({
+				method: 'DELETE',
+				url: `/threads/${createdThread.id}/comments/${createdComment.id}`,
+				headers,
+			});
+
+			// Action
+			const response = await server.inject({
+				method: 'GET',
+				url: `/threads/${createdThread.id}`,
+			});
+
+			// Assert
+			const responseJson = JSON.parse(response.payload);
+
+			expect(response.statusCode).toEqual(200);
+			expect(responseJson.status).toEqual('success');
+
+			const { thread } = responseJson.data;
+
+			expect(thread).toBeDefined();
+			expect(thread.id).toEqual(createdThread.id);
+			expect(thread.title).toEqual(threadPayload.title);
+			expect(thread.body).toEqual(threadPayload.body);
+			expect(thread.date).toBeDefined();
+			expect(thread.username).toEqual(user.username);
+			expect(thread.comments).toHaveLength(1);
+
+			const {
+				comments: [comment],
+			} = thread;
+
+			expect(comment.id).toEqual(createdComment.id);
+			expect(comment.username).toEqual(user.username);
+			expect(comment.date).toBeDefined();
+			expect(comment.content).toEqual('**komentar telah dihapus**');
+		});
+
+		it('should response 404 when thread not found', async () => {
+			// Action
+			const response = await server.inject({
+				method: 'GET',
+				url: '/threads/thread-999',
+			});
+
+			// Assert
+			const responseJson = JSON.parse(response.payload);
+
+			expect(response.statusCode).toEqual(404);
+			expect(responseJson.status).toEqual('fail');
+			expect(responseJson.message).toEqual('thread tidak ditemukan');
 		});
 	});
 });
