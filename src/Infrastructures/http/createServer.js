@@ -10,6 +10,24 @@ const createServer = async (container) => {
 		port: process.env.PORT,
 	});
 
+	await server.register([{ plugin: require('@hapi/jwt') }]);
+
+	server.auth.strategy('access_token', 'jwt', {
+		keys: process.env.ACCESS_TOKEN_KEY,
+		verify: {
+			aud: false,
+			iss: false,
+			sub: false,
+			maxAgeSec: process.env.ACCCESS_TOKEN_AGE,
+		},
+		validate: (artifacts) => ({
+			isValid: true,
+			credentials: {
+				userId: artifacts.decoded.payload.id,
+			},
+		}),
+	});
+
 	await server.register([
 		{
 			plugin: users,
@@ -19,6 +37,18 @@ const createServer = async (container) => {
 			plugin: authentications,
 			options: { container },
 		},
+		{
+			plugin: require('../../Interfaces/http/api/threads'),
+			options: { container },
+		},
+		{
+			plugin: require('../../Interfaces/http/api/comments'),
+			options: { container },
+		},
+		{
+			plugin: require('../../Interfaces/http/api/replies'),
+			options: { container }
+		}
 	]);
 
 	server.ext('onPreResponse', (request, h) => {
@@ -37,6 +67,14 @@ const createServer = async (container) => {
 				});
 				newResponse.code(translatedError.statusCode);
 				return newResponse;
+			}
+
+			/* istanbul ignore next 6 */
+			if (process.env.NODE_ENV !== 'production') {
+				console.error('⚠️ error:', response);
+				console.error('⚠️ cause:', response.cause);
+				console.error('⚠️ stack:', response.stack);
+				console.error('⚠️ message:', response.message);
 			}
 
 			// mempertahankan penanganan client error oleh hapi secara native, seperti 404, etc.

@@ -2,21 +2,21 @@ const createServer = require('../createServer');
 
 describe('HTTP server', () => {
   it('should response 404 when request unregistered route', async () => {
-    // Arrange
+    // arrange
     const server = await createServer({});
 
-    // Action
+    // act
     const response = await server.inject({
       method: 'GET',
       url: '/unregisteredRoute',
     });
 
-    // Assert
+    // assert
     expect(response.statusCode).toEqual(404);
   });
 
   it('should handle server error correctly', async () => {
-    // Arrange
+    // arrange
     const requestPayload = {
       username: 'dicoding',
       fullname: 'Dicoding Indonesia',
@@ -24,14 +24,14 @@ describe('HTTP server', () => {
     };
     const server = await createServer({}); // fake injection
 
-    // Action
+    // act
     const response = await server.inject({
       method: 'POST',
       url: '/users',
       payload: requestPayload,
     });
 
-    // Assert
+    // assert
     const responseJson = JSON.parse(response.payload);
     expect(response.statusCode).toEqual(500);
     expect(responseJson.status).toEqual('error');

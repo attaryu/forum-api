@@ -14,13 +14,13 @@ describe('DomainErrorTranslator', () => {
   });
 
   it('should return original error when error message is not needed to translate', () => {
-    // Arrange
+    // arrange
     const error = new Error('some_error_message');
 
-    // Action
+    // act
     const translatedError = DomainErrorTranslator.translate(error);
 
-    // Assert
+    // assert
     expect(translatedError).toStrictEqual(error);
   });
 });
