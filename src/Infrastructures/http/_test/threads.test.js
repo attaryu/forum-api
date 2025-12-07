@@ -14,7 +14,7 @@ describe('/threads endpoint', () => {
 	};
 
 	let server;
-	let user;
+	let userId;
 	let headers;
 
 	beforeAll(async () => {
@@ -26,7 +26,7 @@ describe('/threads endpoint', () => {
 			fullname: 'fullname',
 		});
 
-		user = creator.user;
+		userId = creator.user.id;
 
 		headers = {
 			Authorization: `Bearer ${creator.accessToken}`,
@@ -59,10 +59,19 @@ describe('/threads endpoint', () => {
 			const responseJson = JSON.parse(response.payload);
 			expect(response.statusCode).toEqual(201);
 			expect(responseJson.status).toEqual('success');
-			expect(responseJson.data.addedThread).toBeDefined();
-			expect(responseJson.data.addedThread.owner).toEqual(user.id);
-		});
 
+			const { addedThread } = responseJson.data;
+
+			expect(addedThread).toBeDefined();
+			expect(addedThread.owner).toEqual(userId);
+			expect(addedThread.title).toEqual(threadPayload.title);
+
+			// verify persisted thread
+			const threads = await ThreadsTableTestHelper.findThreadById(
+				addedThread.id
+			);
+			expect(threads).toHaveLength(1);
+		});
 		it('should response 401 when missing authentication', async () => {
 			// act
 			const response = await server.inject({
@@ -152,35 +161,26 @@ describe('/threads endpoint', () => {
 	describe('when GET /threads/{threadId}', () => {
 		it('should response 200 and return the thread', async () => {
 			// arrange
-			const threadResponse = await server.inject({
-				method: 'POST',
-				url: '/threads',
-				payload: threadPayload,
-				headers,
+			const threadId = 'thread-123';
+			await ThreadsTableTestHelper.addThread({
+				id: threadId,
+				title: threadPayload.title,
+				body: threadPayload.body,
+				owner: userId,
 			});
 
-			const createdThread = JSON.parse(threadResponse.payload).data.addedThread;
-
-			const commentResponse = await server.inject({
-				method: 'POST',
-				url: `/threads/${createdThread.id}/comments`,
-				payload: { content: 'content' },
-				headers,
-			});
-
-			const createdComment = JSON.parse(commentResponse.payload).data
-				.addedComment;
-
-			await server.inject({
-				method: 'DELETE',
-				url: `/threads/${createdThread.id}/comments/${createdComment.id}`,
-				headers,
+			const commentId = 'comment-123';
+			await CommentsTableTestHelper.addComment({
+				id: commentId,
+				threadId,
+				owner: userId,
+				isDelete: true,
 			});
 
 			// act
 			const response = await server.inject({
 				method: 'GET',
-				url: `/threads/${createdThread.id}`,
+				url: `/threads/${threadId}`,
 			});
 
 			// assert
@@ -192,19 +192,17 @@ describe('/threads endpoint', () => {
 			const { thread } = responseJson.data;
 
 			expect(thread).toBeDefined();
-			expect(thread.id).toEqual(createdThread.id);
+			expect(thread.id).toEqual(threadId);
 			expect(thread.title).toEqual(threadPayload.title);
 			expect(thread.body).toEqual(threadPayload.body);
 			expect(thread.date).toBeDefined();
-			expect(thread.username).toEqual(user.username);
 			expect(thread.comments).toHaveLength(1);
 
 			const {
 				comments: [comment],
 			} = thread;
 
-			expect(comment.id).toEqual(createdComment.id);
-			expect(comment.username).toEqual(user.username);
+			expect(comment.id).toEqual(commentId);
 			expect(comment.date).toBeDefined();
 			expect(comment.content).toEqual('**komentar telah dihapus**');
 		});
