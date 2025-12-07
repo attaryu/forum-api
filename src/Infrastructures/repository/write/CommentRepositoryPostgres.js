@@ -26,24 +26,31 @@ class CommentRepositoryPostgres extends CommentRepository {
 		return new AddedComment({ ...result.rows[0] });
 	}
 
-	async deleteComment(commentId) {
+	async deleteComment(threadId, commentId) {
 		await this._pool.query({
-			text: 'UPDATE thread_comments SET is_deleted = true WHERE id = $1',
-			values: [commentId],
+			text: 'UPDATE thread_comments SET is_deleted = true WHERE id = $1 AND thread_id = $2',
+			values: [commentId, threadId],
 		});
 	}
 
-	async verifyComment(commentId, ownerId) {
+	async verifyCommentExist(threadId, commentId) {
 		const result = await this._pool.query({
-			text: 'SELECT owner FROM thread_comments WHERE id = $1',
-			values: [commentId],
+			text: 'SELECT id FROM thread_comments WHERE id = $1 AND thread_id = $2',
+			values: [commentId, threadId],
 		});
 
 		if (!result.rowCount) {
 			throw new NotFoundError('COMMENT.NOT_FOUND');
 		}
+	}
 
-		const comment = result.rows[0];
+	async verifyCommentOwner(commentId, ownerId) {
+		const result = await this._pool.query({
+			text: 'SELECT owner FROM thread_comments WHERE id = $1',
+			values: [commentId],
+		});
+
+		const [comment] = result.rows;
 
 		if (comment.owner !== ownerId) {
 			throw new AuthorizationError('COMMENT.AUTHORIZATION_ERROR');

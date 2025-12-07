@@ -10,10 +10,13 @@ describe('CommentRepository interface', () => {
 			commentRepository.addComment('content', 'thread-123', 'user-123')
 		).rejects.toThrowError('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 		await expect(
-			commentRepository.deleteComment('comment-123')
+			commentRepository.deleteComment('thread-123', 'comment-123')
 		).rejects.toThrowError('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 		await expect(
-			commentRepository.verifyComment('thread-123', 'user-123')
+			commentRepository.verifyCommentExist('thread-123', 'comment-123')
+		).rejects.toThrowError('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+		await expect(
+			commentRepository.verifyCommentOwner('comment-123', 'user-123')
 		).rejects.toThrowError('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 	});
 });
