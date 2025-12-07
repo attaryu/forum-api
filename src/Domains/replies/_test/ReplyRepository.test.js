@@ -9,5 +9,14 @@ describe('ReplyRepository interface', () => {
 		await expect(
 			replyRepository.addReply('content', 'comment-123', 'user-123')
 		).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+		await expect(
+			replyRepository.deleteReply('comment-123', 'reply-123')
+		).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+		await expect(
+			replyRepository.verifyReplyOwner('comment-123', 'user-123')
+		).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+		await expect(
+			replyRepository.verifyReplyExist('comment-123', 'reply-123')
+		).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 	});
 });

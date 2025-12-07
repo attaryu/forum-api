@@ -5,6 +5,8 @@ const CommentsTableTestHelper = require('../../../../../tests/CommentsTableTestH
 const RepliesTableTestHelper = require('../../../../../tests/RepliesTableTestHelper');
 const pool = require('../../../database/postgres/pool');
 const AddedReply = require('../../../../Domains/replies/entities/AddedReply');
+const NotFoundError = require('../../../../Commons/exceptions/NotFoundError');
+const AuthorizationError = require('../../../../Commons/exceptions/AuthorizationError');
 
 describe('ReplyRepository postgres', () => {
 	const threadCreator = 'user-123';
@@ -76,6 +78,77 @@ describe('ReplyRepository postgres', () => {
 			// assert
 			const reply = await RepliesTableTestHelper.findReplyById(expectedReplyId);
 			expect(reply).toBeDefined();
+		});
+	});
+
+	describe('deleteReply function', () => {
+		it('should soft delete reply correctly', async () => {
+			// arrange
+			await RepliesTableTestHelper.addReply({
+				id: expectedReplyId,
+				commentId,
+				owner: replyCreator,
+			});
+
+			// act
+			await replyRepositoryPostgres.deleteReply(commentId, expectedReplyId);
+
+			// assert
+			const reply = await RepliesTableTestHelper.findReplyById(expectedReplyId);
+			expect(reply.is_deleted).toBe(true);
+		});
+	});
+
+	describe('verifyReplyExist function', () => {
+		it('should throw NotFoundError when reply not found', async () => {
+			// act & assert
+			await expect(
+				replyRepositoryPostgres.verifyReplyExist(commentId, 'reply-999')
+			).rejects.toThrowError(NotFoundError);
+		});
+
+		it('should not throw NotFoundError when reply found', async () => {
+			// arrange
+			await RepliesTableTestHelper.addReply({
+				id: expectedReplyId,
+				commentId,
+				owner: replyCreator,
+			});
+
+			// act & assert
+			await expect(
+				replyRepositoryPostgres.verifyReplyExist(commentId, expectedReplyId)
+			).resolves.not.toThrowError(NotFoundError);
+		});
+	});
+
+	describe('verifyReplyOwner function', () => {
+		it('should throw AuthorizationError when user is not the owner', async () => {
+			// arrange
+			await RepliesTableTestHelper.addReply({
+				id: expectedReplyId,
+				commentId,
+				owner: replyCreator,
+			});
+
+			// act & assert
+			await expect(
+				replyRepositoryPostgres.verifyReplyOwner(expectedReplyId, 'user-000')
+			).rejects.toThrowError(AuthorizationError);
+		});
+
+		it('should not throw AuthorizationError when user is the owner', async () => {
+			// arrange
+			await RepliesTableTestHelper.addReply({
+				id: expectedReplyId,
+				commentId,
+				owner: replyCreator,
+			});
+
+			// act & assert
+			await expect(
+				replyRepositoryPostgres.verifyReplyOwner(expectedReplyId, replyCreator)
+			).resolves.not.toThrowError(AuthorizationError);
 		});
 	});
 });

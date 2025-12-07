@@ -169,4 +169,145 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
 			);
 		});
 	});
+
+	describe('when DELETE /threads/{threadId}/comments/{commentId}/replies/{replyId}', () => {
+		it('should response 200 and delete reply', async () => {
+			// arrange
+			const replyId = 'reply-123';
+			await RepliesTableTestHelper.addReply({
+				id: replyId,
+				commentId,
+				owner: replyCreatorId,
+			});
+
+			// act
+			const response = await server.inject({
+				method: 'DELETE',
+				url: `/threads/${threadId}/comments/${commentId}/replies/${replyId}`,
+				headers,
+			});
+
+			// assert
+			const responseJson = JSON.parse(response.payload);
+			expect(response.statusCode).toEqual(200);
+			expect(responseJson.status).toEqual('success');
+
+			const reply = await RepliesTableTestHelper.findReplyById(replyId);
+			expect(reply.is_deleted).toEqual(true);
+		});
+
+		it('should response 401 when missing authentication', async () => {
+			// arrange
+			const replyId = 'reply-456';
+			await RepliesTableTestHelper.addReply({
+				id: replyId,
+				commentId,
+				owner: replyCreatorId,
+			});
+
+			// act
+			const response = await server.inject({
+				method: 'DELETE',
+				url: `/threads/${threadId}/comments/${commentId}/replies/${replyId}`,
+			});
+
+			// assert
+			const responseJson = JSON.parse(response.payload);
+			expect(response.statusCode).toEqual(401);
+			expect(responseJson.message).toEqual('Missing authentication');
+		});
+
+		it('should response 404 when threadId not found', async () => {
+			// arrange
+			const replyId = 'reply-789';
+			await RepliesTableTestHelper.addReply({
+				id: replyId,
+				commentId,
+				owner: replyCreatorId,
+			});
+
+			// act
+			const response = await server.inject({
+				method: 'DELETE',
+				url: `/threads/thread-999/comments/${commentId}/replies/${replyId}`,
+				headers,
+			});
+
+			// assert
+			const responseJson = JSON.parse(response.payload);
+			expect(response.statusCode).toEqual(404);
+			expect(responseJson.status).toEqual('fail');
+			expect(responseJson.message).toEqual('thread tidak ditemukan');
+		});
+
+		it('should response 404 when commentId not found', async () => {
+			// arrange
+			const replyId = 'reply-abc';
+			await RepliesTableTestHelper.addReply({
+				id: replyId,
+				commentId,
+				owner: replyCreatorId,
+			});
+
+			// act
+			const response = await server.inject({
+				method: 'DELETE',
+				url: `/threads/${threadId}/comments/comment-999/replies/${replyId}`,
+				headers,
+			});
+
+			// assert
+			const responseJson = JSON.parse(response.payload);
+			expect(response.statusCode).toEqual(404);
+			expect(responseJson.status).toEqual('fail');
+			expect(responseJson.message).toEqual('komentar tidak ditemukan');
+		});
+
+		it('should response 404 when replyId not found', async () => {
+			// act
+			const response = await server.inject({
+				method: 'DELETE',
+				url: `/threads/${threadId}/comments/${commentId}/replies/reply-999`,
+				headers,
+			});
+
+			// assert
+			const responseJson = JSON.parse(response.payload);
+			expect(response.statusCode).toEqual(404);
+			expect(responseJson.status).toEqual('fail');
+			expect(responseJson.message).toEqual('balasan tidak ditemukan');
+		});
+
+		it('should response 403 when user is not the owner of the reply', async () => {
+			// arrange
+			const replyId = 'reply-def';
+			await RepliesTableTestHelper.addReply({
+				id: replyId,
+				commentId,
+				owner: replyCreatorId,
+			});
+
+			const anotherUser = await helper.createUserAndLogin(server, {
+				username: 'anotherUser',
+				password: 'secret',
+				fullname: 'another user fullname',
+			});
+
+			const anotherUserHeaders = {
+				Authorization: `Bearer ${anotherUser.accessToken}`,
+			};
+
+			// act
+			const response = await server.inject({
+				method: 'DELETE',
+				url: `/threads/${threadId}/comments/${commentId}/replies/${replyId}`,
+				headers: anotherUserHeaders,
+			});
+
+			// assert
+			const responseJson = JSON.parse(response.payload);
+			expect(response.statusCode).toEqual(403);
+			expect(responseJson.status).toEqual('fail');
+		});
+	});
 });
