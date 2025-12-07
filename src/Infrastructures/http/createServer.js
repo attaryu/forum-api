@@ -45,6 +45,10 @@ const createServer = async (container) => {
 			plugin: require('../../Interfaces/http/api/comments'),
 			options: { container },
 		},
+		{
+			plugin: require('../../Interfaces/http/api/replies'),
+			options: { container }
+		}
 	]);
 
 	server.ext('onPreResponse', (request, h) => {

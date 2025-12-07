@@ -8,22 +8,28 @@ const bcrypt = require('bcrypt');
 const Jwt = require('@hapi/jwt');
 const pool = require('./database/postgres/pool');
 
-// service (repository, helper, manager, etc)
+// security
 const PasswordHash = require('../Applications/security/PasswordHash');
 const BcryptPasswordHash = require('./security/BcryptPasswordHash');
 const JwtTokenManager = require('./security/JwtTokenManager');
 const AuthenticationTokenManager = require('../Applications/security/AuthenticationTokenManager');
 
+// repository
 const ThreadRepository = require('../Domains/threads/ThreadRepository');
 const ThreadQueryRepository = require('../Domains/threads/ThreadQueryRepository');
 const UserRepository = require('../Domains/users/UserRepository');
 const AuthenticationRepository = require('../Domains/authentications/AuthenticationRepository');
 const CommentRepository = require('../Domains/comments/CommentRepository');
+const ReplyRepository = require('../Domains/replies/ReplyRepository');
 
+// implementation write repository
 const UserRepositoryPostgres = require('./repository/write/UserRepositoryPostgres');
 const AuthenticationRepositoryPostgres = require('./repository/write/AuthenticationRepositoryPostgres');
 const ThreadRepositoryPostgres = require('./repository/write/ThreadRepositoryPostgres');
 const CommentRepositoryPostgres = require('./repository/write/CommentRepositoryPostgres');
+const ReplyRepositoryPostgres = require('./repository/write/ReplyRepositoryPostgres');
+
+// implementation read repository
 const ThreadQueryRepositoryPostgres = require('./repository/read/ThreadQueryRepositoryPostgres');
 
 // use case
@@ -38,6 +44,8 @@ const GetThreadUseCase = require('../Applications/use_case/threads/GetThreadUseC
 
 const AddCommentUseCase = require('../Applications/use_case/comments/AddCommentUseCase');
 const DeleteCommentUseCase = require('../Applications/use_case/comments/DeleteCommentUseCase');
+
+const AddReplyUseCase = require('../Applications/use_case/replies/AddReplyUseCase');
 
 // creating container
 const container = createContainer();
@@ -126,6 +134,20 @@ container.register([
 			dependencies: [
 				{
 					concrete: pool,
+				},
+			],
+		},
+	},
+	{
+		key: ReplyRepository.name,
+		Class: ReplyRepositoryPostgres,
+		parameter: {
+			dependencies: [
+				{
+					concrete: pool,
+				},
+				{
+					concrete: nanoid,
 				},
 			],
 		},
@@ -262,6 +284,27 @@ container.register([
 				{
 					name: 'threadQueryRepository',
 					internal: ThreadQueryRepository.name,
+				},
+			],
+		},
+	},
+	{
+		key: AddReplyUseCase.name,
+		Class: AddReplyUseCase,
+		parameter: {
+			injectType: 'destructuring',
+			dependencies: [
+				{
+					name: 'threadRepository',
+					internal: ThreadRepository.name,
+				},
+				{
+					name: 'commentRepository',
+					internal: CommentRepository.name,
+				},
+				{
+					name: 'replyRepository',
+					internal: ReplyRepository.name,
 				},
 			],
 		},
