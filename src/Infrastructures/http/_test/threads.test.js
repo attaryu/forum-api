@@ -5,6 +5,7 @@ const createServer = require('../createServer');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
+const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
 const helper = require('./helper');
 
 describe('/threads endpoint', () => {
@@ -36,6 +37,7 @@ describe('/threads endpoint', () => {
 	afterEach(async () => {
 		await CommentsTableTestHelper.cleanTable();
 		await ThreadsTableTestHelper.cleanTable();
+		await RepliesTableTestHelper.cleanTable();
 	});
 
 	afterAll(async () => {
@@ -72,6 +74,7 @@ describe('/threads endpoint', () => {
 			);
 			expect(threads).toHaveLength(1);
 		});
+
 		it('should response 401 when missing authentication', async () => {
 			// act
 			const response = await server.inject({
@@ -174,7 +177,15 @@ describe('/threads endpoint', () => {
 				id: commentId,
 				threadId,
 				owner: userId,
-				isDelete: true,
+				isDeleted: true,
+			});
+
+			const replyId = 'reply-123';
+			await RepliesTableTestHelper.addReply({
+				id: replyId,
+				commentId,
+				owner: userId,
+				isDeleted: true,
 			});
 
 			// act
@@ -195,6 +206,7 @@ describe('/threads endpoint', () => {
 			expect(thread.id).toEqual(threadId);
 			expect(thread.title).toEqual(threadPayload.title);
 			expect(thread.body).toEqual(threadPayload.body);
+			expect(thread.username).toBeDefined();
 			expect(thread.date).toBeDefined();
 			expect(thread.comments).toHaveLength(1);
 
@@ -203,8 +215,19 @@ describe('/threads endpoint', () => {
 			} = thread;
 
 			expect(comment.id).toEqual(commentId);
-			expect(comment.date).toBeDefined();
+			expect(comment.username).toBeDefined();
 			expect(comment.content).toEqual('**komentar telah dihapus**');
+			expect(comment.date).toBeDefined();
+			expect(comment.replies).toHaveLength(1);
+
+			const {
+				replies: [reply],
+			} = comment;
+
+			expect(reply.id).toEqual(replyId);
+			expect(reply.username).toBeDefined();
+			expect(reply.content).toEqual('**balasan telah dihapus**');
+			expect(reply.date).toBeDefined();
 		});
 
 		it('should response 404 when thread not found', async () => {

@@ -9,55 +9,72 @@ class ThreadQueryRepositoryPostgres extends ThreadQueryRepository {
 	}
 
 	async getThreadById(threadId) {
-		// get thread, comment, creator, and commenter
-		const result = await this._pool.query({
+		const threadResult = await this._pool.query({
 			text: `
-        SELECT
-          threads.id AS thread_id,
-          threads.title AS thread_title,
-          threads.body AS thread_body,
-          threads.date AS thread_date,
-          owner.username AS thread_owner_username,
-          thread_comments.id AS comment_id,
-          thread_comments.content AS comment_content,
-          thread_comments.date AS comment_date,
-          thread_comments.is_deleted AS comment_is_deleted,
-          commenter.username AS comment_owner_username
-        FROM threads
-          LEFT JOIN users AS owner ON threads.owner = owner.id
-          LEFT JOIN thread_comments ON thread_comments.thread_id = threads.id
-          LEFT JOIN users AS commenter ON thread_comments.owner = commenter.id
-        WHERE threads.id = $1
-        ORDER BY thread_comments.date ASC
+        SELECT t.id, t.title, t.body, t.date, u.username
+				FROM threads t
+					INNER JOIN users u ON t.owner = u.id
+				WHERE t.id = $1
       `,
 			values: [threadId],
 		});
 
-		if (!result.rowCount) {
+		if (!threadResult.rowCount) {
 			throw new NotFoundError('THREAD.NOT_FOUND');
 		}
 
-		const [thread] = result.rows;
+		const [thread] = threadResult.rows;
 
-		const threadData = {
-			id: thread.thread_id,
-			title: thread.thread_title,
-			body: thread.thread_body,
-			date: thread.thread_date,
-			username: thread.thread_owner_username,
-			comments: result.rows
-				.map((row) => ({
-					id: row.comment_id,
-					content: row.comment_is_deleted
-						? '**komentar telah dihapus**'
-						: row.comment_content,
-					date: row.comment_date,
-					username: row.comment_owner_username,
-				}))
-				.filter((comment) => comment.id !== null),
+		const commentsResult = await this._pool.query({
+			text: `
+				SELECT tc.id, tc.content, tc.date, tc.is_deleted, u.username
+				FROM thread_comments tc
+					INNER JOIN users u ON tc.owner = u.id
+				WHERE tc.thread_id = $1
+				ORDER BY tc.date ASC
+			`,
+			values: [threadId],
+		});
+
+		const repliesResult = await this._pool.query({
+			text: `
+				SELECT r.id, r.content, r.date, r.is_deleted, r.comment_id, u.username
+				FROM comment_replies r
+					INNER JOIN users u ON r.owner = u.id
+					INNER JOIN thread_comments tc ON r.comment_id = tc.id
+				WHERE tc.thread_id = $1
+				ORDER BY r.date ASC
+			`,
+			values: [threadId],
+		});
+
+		const comments = commentsResult.rows.map((comment) => ({
+			id: comment.id,
+			content: comment.is_deleted
+				? '**komentar telah dihapus**'
+				: comment.content,
+			date: comment.date,
+			username: comment.username,
+			replies: repliesResult.rows
+				.filter((reply) => reply.comment_id === comment.id)
+				.map((reply) => ({
+					id: reply.id,
+					content: reply.is_deleted
+						? '**balasan telah dihapus**'
+						: reply.content,
+					date: reply.date,
+					username: reply.username,
+				})),
+		}));
+
+		return {
+			id: thread.id,
+			title: thread.title,
+			body: thread.body,
+			date: thread.date,
+			username: thread.username,
+			comments,
 		};
-
-		return threadData;
 	}
 }
 
