@@ -20,7 +20,9 @@ const ThreadQueryRepository = require('../Domains/threads/ThreadQueryRepository'
 const UserRepository = require('../Domains/users/UserRepository');
 const AuthenticationRepository = require('../Domains/authentications/AuthenticationRepository');
 const CommentRepository = require('../Domains/comments/CommentRepository');
+const CommentQueryRepository = require('../Domains/comments/CommentQueryRepository');
 const ReplyRepository = require('../Domains/replies/ReplyRepository');
+const ReplyQueryRepository = require('../Domains/replies/ReplyQueryRepository');
 
 // implementation write repository
 const UserRepositoryPostgres = require('./repository/write/UserRepositoryPostgres');
@@ -31,6 +33,8 @@ const ReplyRepositoryPostgres = require('./repository/write/ReplyRepositoryPostg
 
 // implementation read repository
 const ThreadQueryRepositoryPostgres = require('./repository/read/ThreadQueryRepositoryPostgres');
+const CommentQueryRepositoryPostgres = require('./repository/read/CommentQueryRepositoryPostgres');
+const ReplyQueryRepositoryPostgres = require('./repository/read/ReplyQueryRepositoryPostgres');
 
 // use case
 const AddUserUseCase = require('../Applications/use_case/users/AddUserUseCase');
@@ -131,6 +135,28 @@ container.register([
 	{
 		key: ThreadQueryRepository.name,
 		Class: ThreadQueryRepositoryPostgres,
+		parameter: {
+			dependencies: [
+				{
+					concrete: pool,
+				},
+			],
+		},
+	},
+	{
+		key: CommentQueryRepository.name,
+		Class: CommentQueryRepositoryPostgres,
+		parameter: {
+			dependencies: [
+				{
+					concrete: pool,
+				},
+			],
+		},
+	},
+	{
+		key: ReplyQueryRepository.name,
+		Class: ReplyQueryRepositoryPostgres,
 		parameter: {
 			dependencies: [
 				{
@@ -285,6 +311,14 @@ container.register([
 				{
 					name: 'threadQueryRepository',
 					internal: ThreadQueryRepository.name,
+				},
+				{
+					name: 'commentQueryRepository',
+					internal: CommentQueryRepository.name,
+				},
+				{
+					name: 'replyQueryRepository',
+					internal: ReplyQueryRepository.name,
 				},
 			],
 		},
