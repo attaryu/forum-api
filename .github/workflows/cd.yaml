@@ -15,7 +15,7 @@ jobs:
       - name: install dependencies
         run: npm install
       - name: run migrations
-        run: npm run migrate:up
+        run: npm run migrate up
         env:
           PGHOST: ${{ secrets.PGHOST }}
           PGUSER: ${{ secrets.PGUSER }}
