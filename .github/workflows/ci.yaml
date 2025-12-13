@@ -34,12 +34,6 @@ jobs:
         run: npm install
       - name: run migrations
         run: npm run migrate:test up
-        env:
-          PGHOST: localhost
-          PGPORT: 5432
-          PGUSER: postgres
-          PGPASSWORD: root
-          PGDATABASE: forumapi_test
       - name: run tests
         run: npm run test
         env:
