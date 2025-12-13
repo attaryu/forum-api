@@ -30,20 +30,19 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install migrate and test
-        run: |
-          npm install
-          npm run migrate up
-          npm run test
+      - name: install dependencies
+        run: npm install
+      - name: run migrations
+        run: npm run migrate:test up
         env:
-          CI: true
-          HOST: localhost
-          PORT: 3000
           PGHOST: localhost
           PGPORT: 5432
           PGUSER: postgres
           PGPASSWORD: root
           PGDATABASE: forumapi_test
+      - name: run tests
+        run: npm run test
+        env:
           ACCESS_TOKEN_KEY: access-token-secret-key
           REFRESH_TOKEN_KEY: refresh-token-secret-key
           ACCCESS_TOKEN_AGE: 3000
