@@ -44,3 +44,6 @@ jobs:
           PGUSER: postgres
           PGPASSWORD: root
           PGDATABASE: forumapi_test
+          ACCESS_TOKEN_KEY: access-token-secret-key
+          REFRESH_TOKEN_KEY: refresh-token-secret-key
+          ACCCESS_TOKEN_AGE: 3000
