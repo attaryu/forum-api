@@ -17,8 +17,10 @@ jobs:
       - name: run migrations
         run: npm run migrate up
         env:
+          NODE_ENV: production
           PGHOST: ${{ secrets.PGHOST }}
           PGUSER: ${{ secrets.PGUSER }}
           PGPASSWORD: ${{ secrets.PGPASSWORD }}
           PGDATABASE: ${{ secrets.PGDATABASE }}
           PGPORT: ${{ secrets.PGPORT }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
