@@ -1,6 +1,7 @@
 const Jwt = require('@hapi/jwt');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const JwtTokenManager = require('../JwtTokenManager');
+const config = require('../../../Commons/config');
 
 describe('JwtTokenManager', () => {
 	describe('createAccessToken function', () => {
@@ -18,9 +19,9 @@ describe('JwtTokenManager', () => {
 			const accessToken = await jwtTokenManager.createAccessToken(payload);
 
 			// assert
-			expect(mockJwtToken.generate).toBeCalledWith(
+			expect(mockJwtToken.generate).toHaveBeenCalledWith(
 				payload,
-				process.env.ACCESS_TOKEN_KEY
+				config.token.access.key
 			);
 			expect(accessToken).toEqual('mock_token');
 		});
@@ -41,9 +42,9 @@ describe('JwtTokenManager', () => {
 			const refreshToken = await jwtTokenManager.createRefreshToken(payload);
 
 			// assert
-			expect(mockJwtToken.generate).toBeCalledWith(
+			expect(mockJwtToken.generate).toHaveBeenCalledWith(
 				payload,
-				process.env.REFRESH_TOKEN_KEY
+				config.token.refresh.key
 			);
 			expect(refreshToken).toEqual('mock_token');
 		});
@@ -60,7 +61,7 @@ describe('JwtTokenManager', () => {
 			// act & assert
 			await expect(
 				jwtTokenManager.verifyRefreshToken(accessToken)
-			).rejects.toThrowError(InvariantError);
+			).rejects.toThrow(InvariantError);
 		});
 
 		it('should not throw InvariantError when refresh token verified', async () => {
@@ -73,7 +74,7 @@ describe('JwtTokenManager', () => {
 			// act & assert
 			await expect(
 				jwtTokenManager.verifyRefreshToken(refreshToken)
-			).resolves.not.toThrowError(InvariantError);
+			).resolves.not.toThrow(InvariantError);
 		});
 	});
 

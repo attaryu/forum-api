@@ -32,16 +32,19 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: install dependencies
         run: npm install
+      - name: check code style
+        run: npm run lint:check
       - name: run migrations
-        run: npm run migrate:test up
+        run: npm run migrate up
+        env:
+          DATABASE_URL: postgresql://postgres:root@localhost:5432/forumapi_test
       - name: run tests
         run: npm run test
         env:
-          PGHOST: localhost
-          PGPORT: 5432
-          PGUSER: postgres
-          PGPASSWORD: root
-          PGDATABASE: forumapi_test
+          NODE_ENV: test
+          HOST: localhost
+          PORT: 5000
+          TEST_DATABASE_URL: postgresql://postgres:root@localhost:5432/forumapi_test
           ACCESS_TOKEN_KEY: access-token-secret-key
           REFRESH_TOKEN_KEY: refresh-token-secret-key
           ACCCESS_TOKEN_AGE: 3000

@@ -104,7 +104,7 @@ describe('ReplyRepository postgres', () => {
 			// act & assert
 			await expect(
 				replyRepositoryPostgres.verifyReplyExist(commentId, 'reply-999')
-			).rejects.toThrowError(NotFoundError);
+			).rejects.toThrow(NotFoundError);
 		});
 
 		it('should not throw NotFoundError when reply found', async () => {
@@ -118,7 +118,7 @@ describe('ReplyRepository postgres', () => {
 			// act & assert
 			await expect(
 				replyRepositoryPostgres.verifyReplyExist(commentId, expectedReplyId)
-			).resolves.not.toThrowError(NotFoundError);
+			).resolves.not.toThrow(NotFoundError);
 		});
 	});
 
@@ -134,7 +134,7 @@ describe('ReplyRepository postgres', () => {
 			// act & assert
 			await expect(
 				replyRepositoryPostgres.verifyReplyOwner(expectedReplyId, 'user-000')
-			).rejects.toThrowError(AuthorizationError);
+			).rejects.toThrow(AuthorizationError);
 		});
 
 		it('should not throw AuthorizationError when user is the owner', async () => {
@@ -148,7 +148,7 @@ describe('ReplyRepository postgres', () => {
 			// act & assert
 			await expect(
 				replyRepositoryPostgres.verifyReplyOwner(expectedReplyId, replyCreator)
-			).resolves.not.toThrowError(AuthorizationError);
+			).resolves.not.toThrow(AuthorizationError);
 		});
 	});
 });

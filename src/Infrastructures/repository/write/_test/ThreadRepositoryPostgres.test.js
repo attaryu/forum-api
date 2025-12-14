@@ -72,7 +72,7 @@ describe('ThreadRepository postgres', () => {
 			// act & assert
 			await expect(
 				threadRepositoryPostgres.verifyThreadExist('thread-123')
-			).rejects.toThrowError(NotFoundError);
+			).rejects.toThrow(NotFoundError);
 		});
 
 		it('should not throw NotFoundError when thread is found', async () => {
@@ -88,7 +88,7 @@ describe('ThreadRepository postgres', () => {
 			// act & assert
 			await expect(
 				threadRepositoryPostgres.verifyThreadExist(id)
-			).resolves.not.toThrowError(NotFoundError);
+			).resolves.not.toThrow(NotFoundError);
 		});
 	});
 });

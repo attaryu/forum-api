@@ -8,7 +8,7 @@ describe('NewAuth entities', () => {
 		};
 
 		// act & assert
-		expect(() => new NewAuth(payload)).toThrowError(
+		expect(() => new NewAuth(payload)).toThrow(
 			'NEW_AUTH.NOT_CONTAIN_NEEDED_PROPERTY'
 		);
 	});
@@ -21,7 +21,7 @@ describe('NewAuth entities', () => {
 		};
 
 		// act & assert
-		expect(() => new NewAuth(payload)).toThrowError(
+		expect(() => new NewAuth(payload)).toThrow(
 			'NEW_AUTH.NOT_MEET_DATA_TYPE_SPECIFICATION'
 		);
 	});

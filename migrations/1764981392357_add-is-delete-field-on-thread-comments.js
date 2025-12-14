@@ -1,7 +1,3 @@
-/* eslint-disable camelcase */
-
-exports.shorthands = undefined;
-
 exports.up = (pgm) => {
 	pgm.addColumn('thread_comments', {
 		is_deleted: {

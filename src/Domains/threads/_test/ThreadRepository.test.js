@@ -7,10 +7,10 @@ describe('ThreadRepository interface', () => {
 		const throwMessage = 'THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED';
 
 		// act & assert
-		await expect(threadRepository.addThread({}, '')).rejects.toThrowError(
+		await expect(threadRepository.addThread({}, '')).rejects.toThrow(
 			throwMessage
 		);
-		await expect(threadRepository.verifyThreadExist('')).rejects.toThrowError(
+		await expect(threadRepository.verifyThreadExist('')).rejects.toThrow(
 			throwMessage
 		);
 	});

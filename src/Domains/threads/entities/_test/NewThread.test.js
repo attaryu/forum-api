@@ -8,7 +8,7 @@ describe('NewThread entities', () => {
 		};
 
 		// act & assert
-		expect(() => new NewThread(payload)).toThrowError(
+		expect(() => new NewThread(payload)).toThrow(
 			'NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY'
 		);
 	});
@@ -21,7 +21,7 @@ describe('NewThread entities', () => {
 		};
 
 		// act & assert
-		expect(() => new NewThread(payload)).toThrowError(
+		expect(() => new NewThread(payload)).toThrow(
 			'NEW_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION'
 		);
 	});
@@ -34,7 +34,7 @@ describe('NewThread entities', () => {
 		};
 
 		// act & assert
-		expect(() => new NewThread(payload)).toThrowError(
+		expect(() => new NewThread(payload)).toThrow(
 			'NEW_THREAD.TITLE_LIMIT_CHAR'
 		);
 	});

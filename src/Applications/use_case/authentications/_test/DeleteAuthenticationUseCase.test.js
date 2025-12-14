@@ -10,7 +10,7 @@ describe('DeleteAuthenticationUseCase', () => {
 		// act & assert
 		await expect(
 			deleteAuthenticationUseCase.execute(useCasePayload)
-		).rejects.toThrowError(
+		).rejects.toThrow(
 			'DELETE_AUTHENTICATION_USE_CASE.NOT_CONTAIN_REFRESH_TOKEN'
 		);
 	});
@@ -25,7 +25,7 @@ describe('DeleteAuthenticationUseCase', () => {
 		// act & assert
 		await expect(
 			deleteAuthenticationUseCase.execute(useCasePayload)
-		).rejects.toThrowError(
+		).rejects.toThrow(
 			'DELETE_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION'
 		);
 	});
@@ -47,10 +47,10 @@ describe('DeleteAuthenticationUseCase', () => {
 		await deleteAuthenticationUseCase.execute(useCasePayload);
 
 		// assert
-		expect(mockAuthenticationRepository.checkAvailabilityToken).toBeCalledWith(
+		expect(mockAuthenticationRepository.checkAvailabilityToken).toHaveBeenCalledWith(
 			useCasePayload.refreshToken
 		);
-		expect(mockAuthenticationRepository.deleteToken).toBeCalledWith(
+		expect(mockAuthenticationRepository.deleteToken).toHaveBeenCalledWith(
 			useCasePayload.refreshToken
 		);
 	});

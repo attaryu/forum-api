@@ -21,7 +21,12 @@ class GetThreadUseCase {
 		const commentsWithReplies = comments.map((comment) => {
 			const commentReplies = replies
 				.filter((reply) => reply.commentId === comment.id)
-				.map(({ commentId, ...reply }) => reply);
+				.map(({ id, username, content, date }) => ({
+					id,
+					username,
+					content,
+					date,
+				}));
 
 			return {
 				...comment,

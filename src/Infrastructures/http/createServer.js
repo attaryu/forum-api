@@ -4,21 +4,20 @@ const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTrans
 const users = require('../../Interfaces/http/api/users');
 const authentications = require('../../Interfaces/http/api/authentications');
 
+const config = require('../../Commons/config');
+
 const createServer = async (container) => {
-	const server = Hapi.server({
-		host: process.env.HOST,
-		port: process.env.PORT,
-	});
+	const server = Hapi.server(config.server);
 
 	await server.register([{ plugin: require('@hapi/jwt') }]);
 
 	server.auth.strategy('access_token', 'jwt', {
-		keys: process.env.ACCESS_TOKEN_KEY,
+		keys: config.token.access.key,
 		verify: {
 			aud: false,
 			iss: false,
 			sub: false,
-			maxAgeSec: process.env.ACCCESS_TOKEN_AGE,
+			maxAgeSec: config.token.access.age,
 		},
 		validate: (artifacts) => ({
 			isValid: true,
@@ -47,8 +46,8 @@ const createServer = async (container) => {
 		},
 		{
 			plugin: require('../../Interfaces/http/api/replies'),
-			options: { container }
-		}
+			options: { container },
+		},
 	]);
 
 	server.ext('onPreResponse', (request, h) => {
@@ -70,7 +69,7 @@ const createServer = async (container) => {
 			}
 
 			/* istanbul ignore next 6 */
-			if (process.env.NODE_ENV !== 'production') {
+			if (config.isTest) {
 				console.error('⚠️ error:', response);
 				console.error('⚠️ cause:', response.cause);
 				console.error('⚠️ stack:', response.stack);

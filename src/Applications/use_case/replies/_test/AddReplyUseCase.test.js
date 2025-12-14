@@ -19,7 +19,7 @@ describe('AddReplyUseCase', () => {
 
 		await expect(
 			addReplyUseCase.execute(payload, threadId, commentId, userId)
-		).rejects.toThrowError('ADD_REPLY_USE_CASE.NOT_CONTAIN_REPLY_CONTENT');
+		).rejects.toThrow('ADD_REPLY_USE_CASE.NOT_CONTAIN_REPLY_CONTENT');
 	});
 
 	it('should throw error if content not string', async () => {
@@ -33,7 +33,7 @@ describe('AddReplyUseCase', () => {
 		// act & assert
 		await expect(
 			addReplyUseCase.execute(payload, threadId, commentId, userId)
-		).rejects.toThrowError(
+		).rejects.toThrow(
 			'ADD_REPLY_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION'
 		);
 	});
@@ -76,12 +76,12 @@ describe('AddReplyUseCase', () => {
 		);
 
 		// assert
-		expect(mockedThreadRepository.verifyThreadExist).toBeCalledWith(threadId);
-		expect(mockedCommentRepository.verifyCommentExist).toBeCalledWith(
+		expect(mockedThreadRepository.verifyThreadExist).toHaveBeenCalledWith(threadId);
+		expect(mockedCommentRepository.verifyCommentExist).toHaveBeenCalledWith(
 			threadId,
 			commentId
 		);
-		expect(mockedReplyRepository.addReply).toBeCalledWith(
+		expect(mockedReplyRepository.addReply).toHaveBeenCalledWith(
 			payload.content,
 			commentId,
 			userId

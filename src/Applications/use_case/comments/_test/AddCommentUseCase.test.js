@@ -17,7 +17,7 @@ describe('AddCommentUseCase', () => {
 
 		await expect(
 			addCommentUseCase.execute(payload, threadId, userId)
-		).rejects.toThrowError('ADD_COMMENT_USE_CASE.NOT_CONTAIN_COMMENT_CONTENT');
+		).rejects.toThrow('ADD_COMMENT_USE_CASE.NOT_CONTAIN_COMMENT_CONTENT');
 	});
 
 	it('should throw error if content not string', async () => {
@@ -31,7 +31,7 @@ describe('AddCommentUseCase', () => {
 		// act & assert
 		await expect(
 			addCommentUseCase.execute(payload, threadId, userId)
-		).rejects.toThrowError(
+		).rejects.toThrow(
 			'ADD_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION'
 		);
 	});
@@ -65,8 +65,8 @@ describe('AddCommentUseCase', () => {
 		);
 
 		// assert
-		expect(mockedThreadRepository.verifyThreadExist).toBeCalledWith(threadId);
-		expect(mockedCommentRepository.addComment).toBeCalledWith(
+		expect(mockedThreadRepository.verifyThreadExist).toHaveBeenCalledWith(threadId);
+		expect(mockedCommentRepository.addComment).toHaveBeenCalledWith(
 			payload.content,
 			threadId,
 			userId

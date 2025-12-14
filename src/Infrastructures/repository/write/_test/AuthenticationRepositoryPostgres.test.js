@@ -41,7 +41,7 @@ describe('AuthenticationRepository postgres', () => {
 			// act & assert
 			await expect(
 				authenticationRepository.checkAvailabilityToken(token)
-			).rejects.toThrowError(InvariantError);
+			).rejects.toThrow(InvariantError);
 		});
 
 		it('should not throw InvariantError if token available', async () => {
@@ -55,7 +55,7 @@ describe('AuthenticationRepository postgres', () => {
 			// act & assert
 			await expect(
 				authenticationRepository.checkAvailabilityToken(token)
-			).resolves.not.toThrowError(InvariantError);
+			).resolves.not.toThrow(InvariantError);
 		});
 	});
 

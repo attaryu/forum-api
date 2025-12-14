@@ -116,7 +116,7 @@ describe('CommentRepository postgres', () => {
 					'thread-123',
 					'comment-xyz'
 				)
-			).rejects.toThrowError(NotFoundError);
+			).rejects.toThrow(NotFoundError);
 		});
 
 		it('should not throw NotFoundError when the comment is exist', async () => {
@@ -131,7 +131,7 @@ describe('CommentRepository postgres', () => {
 			// act & assert
 			await expect(
 				commentRepositoryPostgres.verifyCommentExist(threadId, commentId)
-			).resolves.not.toThrowError(NotFoundError);
+			).resolves.not.toThrow(NotFoundError);
 		});
 	});
 
@@ -148,7 +148,7 @@ describe('CommentRepository postgres', () => {
 			// act & assert
 			await expect(
 				commentRepositoryPostgres.verifyCommentOwner(commentId, 'user-xyz')
-			).rejects.toThrowError(AuthorizationError);
+			).rejects.toThrow(AuthorizationError);
 		});
 
 		it('should not throw AuthorizationError when the owner is same', async () => {
@@ -163,7 +163,7 @@ describe('CommentRepository postgres', () => {
 			// act & assert
 			await expect(
 				commentRepositoryPostgres.verifyCommentOwner(commentId, userCommenterId)
-			).resolves.not.toThrowError(AuthorizationError);
+			).resolves.not.toThrow(AuthorizationError);
 		});
 	});
 });

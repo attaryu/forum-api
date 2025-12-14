@@ -1,7 +1,6 @@
 const CommentsTableTestHelper = require('../../../../../tests/CommentsTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../../tests/UsersTableTestHelper');
-const CommentDetail = require('../../../../Domains/comments/entities/CommentDetail');
 const pool = require('../../../database/postgres/pool');
 const CommentQueryRepositoryPostgres = require('../CommentQueryRepositoryPostgres');
 
