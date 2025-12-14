@@ -28,16 +28,16 @@ describe('DeleteCommentUseCase', () => {
 		await deleteCommentUseCase.execute(threadId, commentId, userId);
 
 		// assert
-		expect(mockThreadRepository.verifyThreadExist).toBeCalledWith(threadId);
-		expect(mockCommentRepository.verifyCommentExist).toBeCalledWith(
+		expect(mockThreadRepository.verifyThreadExist).toHaveBeenCalledWith(threadId);
+		expect(mockCommentRepository.verifyCommentExist).toHaveBeenCalledWith(
 			threadId,
 			commentId
 		);
-		expect(mockCommentRepository.verifyCommentOwner).toBeCalledWith(
+		expect(mockCommentRepository.verifyCommentOwner).toHaveBeenCalledWith(
 			commentId,
 			userId
 		);
-		expect(mockCommentRepository.deleteComment).toBeCalledWith(
+		expect(mockCommentRepository.deleteComment).toHaveBeenCalledWith(
 			threadId,
 			commentId
 		);

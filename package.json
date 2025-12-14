@@ -16,21 +16,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hapi/hapi": "^20.1.5",
-    "@hapi/jwt": "^2.0.1",
+    "@hapi/hapi": "^21.4.4",
+    "@hapi/jwt": "^3.2.3",
     "bcrypt": "^6.0.0",
-    "dotenv": "^10.0.0",
+    "dotenv": "^17.2.3",
     "instances-container": "^2.0.3",
     "nanoid": "^3.1.23",
     "pg": "^8.6.0"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.24",
-    "eslint": "^7.30.0",
-    "eslint-config-airbnb-base": "^14.2.1",
+    "@types/jest": "^30.0.0",
+    "eslint": "^9.39.2",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.23.4",
-    "jest": "^27.0.6",
-    "node-pg-migrate": "^5.10.0",
-    "nodemon": "^2.0.9"
+    "jest": "^30.2.0",
+    "node-pg-migrate": "^8.0.4",
+    "nodemon": "^3.1.11"
   }
 }

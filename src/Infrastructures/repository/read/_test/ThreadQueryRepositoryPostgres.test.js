@@ -42,7 +42,7 @@ describe('ThreadQueryRepository postgres', () => {
 			// act & assert
 			await expect(
 				threadQueryRepositoryPostgres.getThreadById('thread-999')
-			).rejects.toThrowError(NotFoundError);
+			).rejects.toThrow(NotFoundError);
 		});
 	});
 });

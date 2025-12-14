@@ -68,11 +68,11 @@ describe('GetThreadUseCase', () => {
 		const thread = await getThreadUseCase.execute(threadId);
 
 		// assert
-		expect(mockedThreadQueryRepository.getThreadById).toBeCalledWith(threadId);
-		expect(mockedCommentQueryRepository.getCommentsByThreadId).toBeCalledWith(
+		expect(mockedThreadQueryRepository.getThreadById).toHaveBeenCalledWith(threadId);
+		expect(mockedCommentQueryRepository.getCommentsByThreadId).toHaveBeenCalledWith(
 			threadId
 		);
-		expect(mockedReplyQueryRepository.getRepliesByThreadId).toBeCalledWith(
+		expect(mockedReplyQueryRepository.getRepliesByThreadId).toHaveBeenCalledWith(
 			threadId
 		);
 

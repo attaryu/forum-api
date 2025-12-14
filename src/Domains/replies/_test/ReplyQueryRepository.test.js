@@ -8,6 +8,6 @@ describe('ReplyQueryRepository interface', () => {
 		// act & assert
 		await expect(
 			replyQueryRepository.getRepliesByThreadId('thread-123')
-		).rejects.toThrowError('REPLY_QUERY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+		).rejects.toThrow('REPLY_QUERY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 	});
 });

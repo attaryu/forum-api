@@ -19,7 +19,7 @@ describe('JwtTokenManager', () => {
 			const accessToken = await jwtTokenManager.createAccessToken(payload);
 
 			// assert
-			expect(mockJwtToken.generate).toBeCalledWith(
+			expect(mockJwtToken.generate).toHaveBeenCalledWith(
 				payload,
 				config.token.access.key
 			);
@@ -42,7 +42,7 @@ describe('JwtTokenManager', () => {
 			const refreshToken = await jwtTokenManager.createRefreshToken(payload);
 
 			// assert
-			expect(mockJwtToken.generate).toBeCalledWith(
+			expect(mockJwtToken.generate).toHaveBeenCalledWith(
 				payload,
 				config.token.refresh.key
 			);
@@ -61,7 +61,7 @@ describe('JwtTokenManager', () => {
 			// act & assert
 			await expect(
 				jwtTokenManager.verifyRefreshToken(accessToken)
-			).rejects.toThrowError(InvariantError);
+			).rejects.toThrow(InvariantError);
 		});
 
 		it('should not throw InvariantError when refresh token verified', async () => {
@@ -74,7 +74,7 @@ describe('JwtTokenManager', () => {
 			// act & assert
 			await expect(
 				jwtTokenManager.verifyRefreshToken(refreshToken)
-			).resolves.not.toThrowError(InvariantError);
+			).resolves.not.toThrow(InvariantError);
 		});
 	});
 

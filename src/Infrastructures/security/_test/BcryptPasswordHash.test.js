@@ -17,7 +17,7 @@ describe('BcryptEncryptionHelper', () => {
 			// assert
 			expect(typeof encryptedPassword).toEqual('string');
 			expect(encryptedPassword).not.toEqual('plain_password');
-			expect(spyHash).toBeCalledWith('plain_password', 10); // 10 adalah nilai saltRound default untuk BcryptEncryptionHelper
+			expect(spyHash).toHaveBeenCalledWith('plain_password', 10); // 10 adalah nilai saltRound default untuk BcryptEncryptionHelper
 		});
 	});
 
@@ -32,7 +32,7 @@ describe('BcryptEncryptionHelper', () => {
 					'plain_password',
 					'encrypted_password'
 				)
-			).rejects.toThrowError(AuthenticationError);
+			).rejects.toThrow(AuthenticationError);
 		});
 
 		it('should not return AuthenticationError if password match', async () => {
@@ -46,7 +46,7 @@ describe('BcryptEncryptionHelper', () => {
 			// act & assert
 			await expect(
 				bcryptEncryptionHelper.comparePassword(plainPassword, encryptedPassword)
-			).resolves.not.toThrowError(AuthenticationError);
+			).resolves.not.toThrow(AuthenticationError);
 		});
 	});
 });

@@ -6,7 +6,7 @@ describe('ThreadQueryRepository interface', () => {
 		const threadQueryRepository = new ThreadQueryRepository();
 
 		// act & assert
-		await expect(threadQueryRepository.getThreadById('')).rejects.toThrowError(
+		await expect(threadQueryRepository.getThreadById('')).rejects.toThrow(
 			'THREAD_QUERY_REPOSITORY.METHOD_NOT_IMPLEMENTED'
 		);
 	});

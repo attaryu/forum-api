@@ -8,6 +8,6 @@ describe('CommentQueryRepository interface', () => {
 		// act & assert
 		await expect(
 			commentQueryRepository.getCommentsByThreadId('thread-123')
-		).rejects.toThrowError('COMMENT_QUERY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+		).rejects.toThrow('COMMENT_QUERY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 	});
 });
