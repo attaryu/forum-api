@@ -2,8 +2,6 @@ const DeleteReplyUseCase = require('../DeleteReplyUseCase');
 const ReplyRepository = require('../../../../Domains/replies/ReplyRepository');
 const CommentRepository = require('../../../../Domains/comments/CommentRepository');
 const ThreadRepository = require('../../../../Domains/threads/ThreadRepository');
-const NotFoundError = require('../../../../Commons/exceptions/NotFoundError');
-const AuthorizationError = require('../../../../Commons/exceptions/AuthorizationError');
 
 describe('DeleteReplyUseCase', () => {
 	it('should orchestrating the delete reply action correctly', async () => {

@@ -32,6 +32,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: install dependencies
         run: npm install
+      - name: check code style
+        run: npm run lint:check
       - name: run migrations
         run: npm run migrate up
         env:
