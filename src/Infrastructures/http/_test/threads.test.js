@@ -179,6 +179,7 @@ describe('/threads endpoint', () => {
 				owner: userId,
 				isDeleted: true,
 			});
+			await CommentsTableTestHelper.likeComment({ commentId, userId });
 
 			const replyId = 'reply-123';
 			await RepliesTableTestHelper.addReply({
@@ -219,6 +220,7 @@ describe('/threads endpoint', () => {
 			expect(comment.content).toEqual('**komentar telah dihapus**');
 			expect(comment.date).toBeDefined();
 			expect(comment.replies).toHaveLength(1);
+			expect(comment.likeCount).toEqual(1);
 
 			const {
 				replies: [reply],

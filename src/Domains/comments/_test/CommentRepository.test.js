@@ -18,5 +18,14 @@ describe('CommentRepository interface', () => {
 		await expect(
 			commentRepository.verifyCommentOwner('comment-123', 'user-123')
 		).rejects.toThrow('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+		await expect(
+			commentRepository.verifyLikeComment('comment-123', 'user-123')
+		).rejects.toThrow('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+		await expect(
+			commentRepository.likeComment('comment-123', 'user-123')
+		).rejects.toThrow('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+		await expect(
+			commentRepository.unlikeComment('comment-123', 'user-123')
+		).rejects.toThrow('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 	});
 });
