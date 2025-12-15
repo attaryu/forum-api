@@ -11,7 +11,7 @@ class CommentQueryRepositoryPostgres extends CommentQueryRepository {
 	async getCommentsByThreadId(threadId) {
 		const result = await this._pool.query({
 			text: `
-				SELECT tc.id, tc.content, tc.date, tc.is_deleted, u.username
+				SELECT tc.id, tc.content, tc.date, tc.is_deleted, u.username, tc.like_count
 				FROM thread_comments tc
 					INNER JOIN users u ON tc.owner = u.id
 				WHERE tc.thread_id = $1
@@ -28,6 +28,7 @@ class CommentQueryRepositoryPostgres extends CommentQueryRepository {
 					date: comment.date,
 					isDeleted: comment.is_deleted,
 					username: comment.username,
+					likeCount: comment.like_count,
 				})
 		);
 	}

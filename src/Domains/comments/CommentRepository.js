@@ -17,14 +17,35 @@ class CommentRepository {
 	async verifyCommentExist(threadId, commentId) {
 		threadId;
 		commentId;
-		
+
 		throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 	}
-	
+
 	async verifyCommentOwner(commentId, owner) {
 		commentId;
-		owner
-		
+		owner;
+
+		throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+	}
+
+	async verifyLikeComment(commentId, userId) {
+		commentId;
+		userId;
+
+		throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+	}
+
+	async likeComment(commentId, userId) {
+		commentId;
+		userId;
+
+		throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+	}
+
+	async unlikeComment(commentId, userId) {
+		commentId;
+		userId;
+
 		throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 	}
 }

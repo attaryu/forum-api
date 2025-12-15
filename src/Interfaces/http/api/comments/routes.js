@@ -11,6 +11,12 @@ const routes = (handler) => [
 		handler: handler.deleteCommentHandler,
 		options: { auth: 'access_token' },
 	},
+	{
+		method: 'PUT',
+		path: '/threads/{threadId}/comments/{commentId}/likes',
+		handler: handler.putLikeCommentHandler,
+		options: { auth: 'access_token' },
+	}
 ];
 
 module.exports = routes;
