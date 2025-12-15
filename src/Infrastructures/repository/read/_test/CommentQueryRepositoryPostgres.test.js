@@ -5,38 +5,45 @@ const pool = require('../../../database/postgres/pool');
 const CommentQueryRepositoryPostgres = require('../CommentQueryRepositoryPostgres');
 
 describe('CommentQueryRepositoryPostgres', () => {
+	const userId = 'user-123';
+	const threadId = 'thread-123';
+
+	const commentQueryRepository = new CommentQueryRepositoryPostgres(pool);
+
+	beforeAll(async () => {
+		await UsersTableTestHelper.addUser({ id: userId, username: 'username' });
+		await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
+	});
+
 	afterEach(async () => {
 		await CommentsTableTestHelper.cleanTable();
-		await ThreadsTableTestHelper.cleanTable();
-		await UsersTableTestHelper.cleanTable();
 	});
 
 	afterAll(async () => {
+		await ThreadsTableTestHelper.cleanTable();
+		await UsersTableTestHelper.cleanTable();
+
 		await pool.end();
 	});
 
 	describe('getCommentsByThreadId function', () => {
 		it('should return comments correctly', async () => {
 			// arrange
-			const threadId = 'thread-123';
-			const userId = 'user-123';
-
-			await UsersTableTestHelper.addUser({ id: userId, username: 'username' });
-			await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
+			const commentId = 'comment-123';
 			await CommentsTableTestHelper.addComment({
-				id: 'comment-123',
+				id: commentId,
 				threadId,
 				owner: userId,
 				content: 'first comment',
 			});
+			await CommentsTableTestHelper.likeComment({ commentId, userId });
+
 			await CommentsTableTestHelper.addComment({
 				id: 'comment-456',
 				threadId,
 				owner: userId,
 				content: 'second comment',
 			});
-
-			const commentQueryRepository = new CommentQueryRepositoryPostgres(pool);
 
 			// act
 			const comments = await commentQueryRepository.getCommentsByThreadId(
@@ -52,21 +59,16 @@ describe('CommentQueryRepositoryPostgres', () => {
 			expect(comment1.username).toEqual('username');
 			expect(comment1.content).toEqual('first comment');
 			expect(comment1.date).toBeDefined();
+			expect(comment1.likeCount).toEqual(1);
+
 			expect(comment2.id).toEqual('comment-456');
 			expect(comment2.username).toEqual('username');
 			expect(comment2.content).toEqual('second comment');
+			expect(comment2.date).toBeDefined();
+			expect(comment2.likeCount).toEqual(0);
 		});
 
 		it('should return empty array when no comments', async () => {
-			// arrange
-			const threadId = 'thread-123';
-			const userId = 'user-123';
-
-			await UsersTableTestHelper.addUser({ id: userId });
-			await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
-
-			const commentQueryRepository = new CommentQueryRepositoryPostgres(pool);
-
 			// act
 			const comments = await commentQueryRepository.getCommentsByThreadId(
 				threadId

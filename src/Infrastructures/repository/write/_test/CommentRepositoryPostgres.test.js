@@ -136,15 +136,16 @@ describe('CommentRepository postgres', () => {
 	});
 
 	describe('verifyCommentOwner function', () => {
-		it('should throw AuthorizationError when the owner is different', async () => {
-			// arrange
+		beforeEach(async () => {
 			await CommentsTableTestHelper.addComment({
 				id: commentId,
 				content,
 				threadId,
 				owner: userCommenterId,
 			});
+		});
 
+		it('should throw AuthorizationError when the owner is different', async () => {
 			// act & assert
 			await expect(
 				commentRepositoryPostgres.verifyCommentOwner(commentId, 'user-xyz')
@@ -152,6 +153,46 @@ describe('CommentRepository postgres', () => {
 		});
 
 		it('should not throw AuthorizationError when the owner is same', async () => {
+			// act & assert
+			await expect(
+				commentRepositoryPostgres.verifyCommentOwner(commentId, userCommenterId)
+			).resolves.not.toThrow(AuthorizationError);
+		});
+	});
+
+	describe('verifyLikeComment function', () => {
+		beforeEach(async () => {
+			await CommentsTableTestHelper.addComment({
+				id: commentId,
+				content,
+				threadId,
+				owner: userCommenterId,
+			});
+		});
+
+		it('should throw NotFoundError when comment has not been liked by the user', async () => {
+			// act & assert
+			await expect(
+				commentRepositoryPostgres.verifyLikeComment(commentId, userCommenterId)
+			).rejects.toThrow(NotFoundError);
+		});
+
+		it('should not throw NotFoundError when comment has been liked by the user', async () => {
+			// arrange
+			await CommentsTableTestHelper.likeComment({
+				commentId,
+				userId: userCommenterId,
+			});
+
+			// act & assert
+			await expect(
+				commentRepositoryPostgres.verifyLikeComment(commentId, userCommenterId)
+			).resolves.not.toThrow(NotFoundError);
+		});
+	});
+
+	describe('likeComment function', () => {
+		it('should like comment correctly', async () => {
 			// arrange
 			await CommentsTableTestHelper.addComment({
 				id: commentId,
@@ -160,10 +201,51 @@ describe('CommentRepository postgres', () => {
 				owner: userCommenterId,
 			});
 
-			// act & assert
-			await expect(
-				commentRepositoryPostgres.verifyCommentOwner(commentId, userCommenterId)
-			).resolves.not.toThrow(AuthorizationError);
+			// act
+			await commentRepositoryPostgres.likeComment(commentId, userCommenterId);
+
+			// assert
+			const commentLikes = await CommentsTableTestHelper.findLikeComment(
+				commentId,
+				userCommenterId
+			);
+			expect(commentLikes).toHaveLength(1);
+
+			const [likedComment] = await CommentsTableTestHelper.findCommentsById(
+				commentId
+			);
+			expect(likedComment.like_count).toBe(1);
+		});
+	});
+
+	describe('unlikeComment function', () => {
+		it('should unlike comment correctly', async () => {
+			// arrange
+			await CommentsTableTestHelper.addComment({
+				id: commentId,
+				content,
+				threadId,
+				owner: userCommenterId,
+			});
+			await CommentsTableTestHelper.likeComment({
+				commentId,
+				userId: userCommenterId,
+			});
+
+			// act
+			await commentRepositoryPostgres.unlikeComment(commentId, userCommenterId);
+
+			// assert
+			const commentLikes = await CommentsTableTestHelper.findLikeComment(
+				commentId,
+				userCommenterId
+			);
+			expect(commentLikes).toHaveLength(0);
+
+			const [unlikedComment] = await CommentsTableTestHelper.findCommentsById(
+				commentId
+			);
+			expect(unlikedComment.like_count).toBe(0);
 		});
 	});
 });

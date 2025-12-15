@@ -23,6 +23,7 @@ describe('CommentDetail', () => {
 			date: 123,
 			content: 'content',
 			isDeleted: false,
+			likeCount: 'five',
 		};
 
 		// act & assert
@@ -39,6 +40,7 @@ describe('CommentDetail', () => {
 			date: '2021-08-08T07:19:09.775Z',
 			content: 'sebuah comment',
 			isDeleted: false,
+			likeCount: 5,
 		};
 
 		// act
@@ -49,6 +51,7 @@ describe('CommentDetail', () => {
 		expect(commentDetail.username).toEqual(payload.username);
 		expect(commentDetail.date).toEqual(payload.date);
 		expect(commentDetail.content).toEqual('sebuah comment');
+		expect(commentDetail.likeCount).toEqual(payload.likeCount);
 	});
 
 	it('should create commentDetail object correctly when deleted', () => {
@@ -59,6 +62,7 @@ describe('CommentDetail', () => {
 			date: '2021-08-08T07:19:09.775Z',
 			content: 'sebuah comment',
 			isDeleted: true,
+			likeCount: 5,
 		};
 
 		// act
@@ -69,5 +73,6 @@ describe('CommentDetail', () => {
 		expect(commentDetail.username).toEqual(payload.username);
 		expect(commentDetail.date).toEqual(payload.date);
 		expect(commentDetail.content).toEqual('**komentar telah dihapus**');
+		expect(commentDetail.likeCount).toEqual(payload.likeCount);
 	});
 });
